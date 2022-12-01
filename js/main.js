@@ -1,6 +1,13 @@
 const ulDOM = document.querySelector('#list'); // tasklar icin listeler
+const toastDOM = document.querySelectorAll('.toast');
 let taskDOM = document.querySelector('#task'); // form DOM
 
+//toast list
+let toastList = [...toastDOM].map((toastEl) => {
+    return new bootstrap.Toast(toastEl)
+});
+
+// eleman ekleme
 const addListElement = (content) => {
     let liDOM = document.createElement('li');
     liDOM.classList.add("list-group-item", "list-group-item-primary");
@@ -17,7 +24,7 @@ const addListElement = (content) => {
 
 // yeni task eklenmesi
 function newElement() {
-    if (!taskDOM.value.trim()) {return taskDOM.value = ""}
+    if (!taskDOM.value.trim()) { return taskDOM.value = "" }
 
     let taskListElement = addListElement(taskDOM.value);
 
@@ -29,13 +36,16 @@ function newElement() {
     taskDOM.value = ""
 }
 
-// deger bos mu?
-function isEmpty(DOM) {
-    if (!DOM) {
-        return true;
+// toast function
+function toastAlert() {
+    if (!taskDOM.value.trim()) {
+        toastList[1].show();
     }
-    return false;
+    else {
+        toastList[0].show();
+    }
 }
+
 
 // Task'i silmek
 function clearTask() {
