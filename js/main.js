@@ -1,46 +1,40 @@
 const ulDOM = document.querySelector('#list'); // tasklar icin listeler
 let taskDOM = document.querySelector('#task'); // form DOM
 
-// yeni task eklenmesi
-function newElement() {
-    // Eger bos ise task olusturma.
-    if (isEmpty(taskDOM)) return null;
-
-    // elementleri olusturma
+const addListElement = (content) => {
     let liDOM = document.createElement('li');
-    let divDOM = document.createElement('div');
-    let btnDOM = document.createElement('button');
-
-    // elementlere ekleme
-    ulDOM.append(liDOM);
-    liDOM.append(divDOM);
-
-    // elemente classlarini verme
     liDOM.classList.add("list-group-item", "list-group-item-primary");
 
-    // tasklara tiklandiginda secilmesi
-    liDOM.addEventListener('click', selectorTask);
-
-    // form icindeki bilgiyi alma
-    divDOM.innerText = `${task.value}`;
-
-    // tasklari silme butonu
-    btnDOM.classList.add("btn", "btn-close", "float-end");
-    btnDOM.ariaLabel = "Close";
-    btnDOM.addEventListener('click', clearTask);
-
-    // butonu ekleme
-    divDOM.append(btnDOM);
-
-    // task girildiginde form icindeki bilgiyi sifirlama
-    taskDOM.value = "";
+    liDOM.innerHTML = `
+    <i class="bi float-start"></i>&nbsp;
+    <span id="content">
+    ${content}
+    <button type="button" class="btn btn-close float-end" aria-label="Close"></button>
+    </span>
+    `
+    return liDOM;
 }
 
-// girilen deger bos mu?
-function isEmpty(dom) {
-    if (!dom.value) {
+// yeni task eklenmesi
+function newElement() {
+    if (!taskDOM.value.trim()) {return taskDOM.value = ""}
+
+    let taskListElement = addListElement(taskDOM.value);
+
+    taskListElement.addEventListener('click', selectorTask);
+
+    ulDOM.append(taskListElement);
+    taskListElement.querySelector('.btn').addEventListener('click', clearTask);
+
+    taskDOM.value = ""
+}
+
+// deger bos mu?
+function isEmpty(DOM) {
+    if (!DOM) {
         return true;
     }
+    return false;
 }
 
 // Task'i silmek
@@ -50,18 +44,18 @@ function clearTask() {
 
 // Task selector
 function selectorTask() {
-    // buton DOM
-    let btn = this.querySelector('.btn');
-    // eger task bitmis ise onaylanir.
-    if (this.classList.value.split(" ").includes('bg-success')) {
-        // task bilgisini duzeltir.
-        this.style.textDecoration = "none";
-        this.classList.remove('bg-success');
-        btn.classList.remove("disabled"); // task onaylanmissa silem butonunu kapatir.
+    let iClassList = this.querySelector('i').classList;
+    let liClass = [...iClassList.values()];
+    let spanStyle = this.querySelector('span');
+    console.log();
+    if (liClass.includes('bi-list-check')) {
+        iClassList.remove("bi-list-check");
+        spanStyle.style.textDecoration = "none";
+        this.classList.remove('bg-secondary');
     }
     else {
-        this.style.textDecoration = "line-through"; // task onayli ise bilginin ustunu cizer.
-        this.classList.add('bg-success');
-        btn.classList.add("disabled"); // task onaylanmissa silem butonunu kapatir.
+        iClassList.add("bi-list-check");
+        spanStyle.style.textDecoration = "line-through";
+        this.classList.add('bg-secondary');
     }
 }
